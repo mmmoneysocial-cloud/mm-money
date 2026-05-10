@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MM·Money · Rare World Banknotes for Sale | <!-- ITEM_COUNT -->4,073 Items</title>
+<meta name="description" content="Rare and collectible world banknotes from 208 countries. UNC, VF, Specimen and Error notes. <!-- ITEM_COUNT -->4,073 listings on Delcampe and eBay.">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="MM·Money — Rare World Banknote Shop">
+<meta property="og:description" content="Rare and collectible world banknotes from 208 countries. UNC, VF, Specimen and Error notes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mm-money.github.io/">
+<meta property="og:image" content="https://mm-money.github.io/og-cover.jpg">
+<link rel="canonical" href="https://mm-money.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"
+        integrity="sha384-D/t0ZMqQW31H3az8ktEiNb39wyKnS82iFY52QPACM+IjKW3jDUhyIgh2PApRqJZs"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0906;--bg2:#110f0c;--bg3:#1a1712;
+  --gold:#c8a45a;--gold-dim:#7a6030;
+  --text:#e8e0d0;--muted:#7a6e5e;
+  --border:#1e1b16;--urgent:#a04838;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-weight:400;line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* nav */
+#nav{position:sticky;top:0;z-index:100;background:var(--bg2);border-bottom:1px solid var(--border);padding:.75rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.35rem;letter-spacing:.08em;color:var(--gold)}
+.logo em{font-style:italic;font-weight:300}
+.nav-right{display:flex;align-items:center;gap:1rem;font-size:.8rem;color:var(--muted)}
+.nav-right a{color:var(--gold);transition:opacity .2s}
+.nav-right a:hover{opacity:.75}
+.count-badge{background:var(--bg3);border:1px solid var(--gold-dim);color:var(--gold);padding:.15rem .5rem;border-radius:2px;font-size:.72rem}
+
+/* toolbar */
+#toolbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.75rem 1.5rem;display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+#search{flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.45rem .8rem;font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s}
+#search:focus{border-color:var(--gold-dim)}
+#search::placeholder{color:var(--muted)}
+#sort-select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.45rem .7rem;font-family:'Outfit',sans-serif;font-size:.83rem;outline:none;cursor:pointer}
+#sort-select option{background:var(--bg2)}
+.chips{display:flex;gap:.35rem;flex-wrap:wrap}
+.chip{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.3rem .65rem;font-size:.75rem;transition:background .15s,color .15s,border-color .15s}
+.chip:hover{border-color:var(--gold);color:var(--text)}
+.chip.active{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+#mobile-countries-btn{display:none}
+
+/* country banner */
+#country-banner{display:none;background:var(--bg3);border-bottom:1px solid var(--border);padding:.55rem 1.5rem;align-items:center;justify-content:space-between;gap:1rem}
+#country-banner.visible{display:flex}
+#banner-label{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;letter-spacing:.05em;color:var(--gold)}
+#banner-clear{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.25rem .65rem;font-size:.75rem;transition:border-color .15s,color .15s}
+#banner-clear:hover{border-color:var(--gold);color:var(--gold)}
+
+/* layout */
+#main{display:flex;align-items:flex-start}
+#grid-wrap{flex:1;min-width:0}
+#results-summary{padding:.45rem 1rem .3rem;font-size:.75rem;color:var(--muted)}
+
+/* grid */
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1px;background:var(--border)}
+#grid.empty{background:transparent}
+.card{background:var(--bg2);display:flex;flex-direction:column;position:relative}
+.card>a{display:flex;flex-direction:column;height:100%}
+.card-img-wrap{position:relative;aspect-ratio:8/5;overflow:hidden;background:var(--bg3)}
+.card-img-wrap img{width:100%;height:100%;object-fit:contain;transition:transform .35s ease;display:block}
+.card:hover .card-img-wrap img{transform:scale(1.04)}
+.img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--gold-dim);background:var(--bg3)}
+.badge{position:absolute;top:6px;left:6px;font-size:.62rem;font-weight:500;letter-spacing:.05em;padding:2px 7px;color:#fff}
+.badge-rare{background:#a04838}.badge-specimen{background:#3a6ea8}.badge-overprint{background:#5a7a3a}.badge-error{background:#7a3a8a}
+.card-body{padding:.6rem .7rem;flex:1}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:.92rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:.45rem;color:var(--text)}
+.card-price{color:var(--gold);font-size:1.1rem;font-weight:500;margin-bottom:.3rem}
+.card-meta{font-size:.7rem;color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap}
+.card-meta .urgent{color:var(--urgent)}
+.card-cta{padding:.45rem .7rem;font-size:.75rem;color:var(--gold-dim);border-top:1px solid var(--border);transition:background .2s,color .2s}
+.card:hover .card-cta{background:var(--bg3);color:var(--gold)}
+
+/* states */
+#empty-state{display:none;text-align:center;padding:4rem 2rem;color:var(--muted)}
+#empty-state h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.6rem;color:var(--gold-dim);margin-bottom:.5rem}
+#loading-state{text-align:center;padding:5rem 2rem;color:var(--muted)}
+#loading-state p{margin-top:.5rem;font-size:.85rem}
+.spinner{display:inline-block;width:2rem;height:2rem;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* pagination */
+#pagination{display:flex;justify-content:center;align-items:center;gap:.35rem;padding:1.2rem 1rem;flex-wrap:wrap}
+.page-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.3rem .6rem;font-size:.78rem;min-width:2rem;transition:border-color .15s,color .15s}
+.page-btn:hover{border-color:var(--gold-dim);color:var(--text)}
+.page-btn.active{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.page-btn.prev-next{padding:.3rem .8rem}
+
+/* sidebar */
+#sidebar{width:175px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);position:sticky;top:calc(45px + 55px);max-height:calc(100vh - 100px);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:.65rem .8rem .4rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);flex-shrink:0}
+#country-search{width:100%;background:var(--bg3);border:none;border-bottom:1px solid var(--border);color:var(--text);padding:.45rem .8rem;font-size:.78rem;font-family:'Outfit',sans-serif;outline:none;flex-shrink:0}
+#country-search::placeholder{color:var(--muted)}
+#country-list{overflow-y:auto;flex:1}
+#country-list::-webkit-scrollbar{width:4px}
+#country-list::-webkit-scrollbar-track{background:var(--bg2)}
+#country-list::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
+.country-row{display:flex;align-items:center;justify-content:space-between;padding:.4rem .8rem;font-size:.78rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;gap:.3rem}
+.country-row:hover{background:var(--bg3)}
+.country-row.active{background:var(--bg3);color:var(--gold)}
+.country-dot{color:var(--gold-dim);font-size:.6rem;flex-shrink:0}
+.country-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.country-count{color:var(--muted);font-size:.7rem;flex-shrink:0}
+
+/* mobile drawer */
+#drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200}
+#drawer-overlay.open{display:block}
+#country-drawer{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--bg2);border-top:1px solid var(--border);max-height:70vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease}
+#country-drawer.open{transform:translateY(0)}
+#drawer-header{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+#drawer-header span{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#drawer-close{background:transparent;border:none;color:var(--muted);font-size:1.1rem;padding:.2rem .4rem}
+#drawer-search{width:100%;background:var(--bg3);border:none;border-bottom:1px solid var(--border);color:var(--text);padding:.5rem 1rem;font-size:.88rem;font-family:'Outfit',sans-serif;outline:none;flex-shrink:0}
+#drawer-search::placeholder{color:var(--muted)}
+#drawer-list{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+
+/* footer */
+footer{text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.78rem;border-top:1px solid var(--border);margin-top:2rem}
+footer a{color:var(--gold-dim);transition:color .2s}
+footer a:hover{color:var(--gold)}
+
+/* responsive */
+@media(max-width:700px){
+  #sidebar{display:none}
+  #mobile-countries-btn{display:inline-flex;align-items:center;gap:.3rem}
+  #nav{padding:.6rem 1rem}
+  .nav-right .count-badge{display:none}
+  #toolbar{padding:.55rem .8rem;gap:.45rem}
+  #search{min-width:0;flex:1}
+  .chips{gap:.25rem}
+  .chip{padding:.28rem .5rem;font-size:.72rem}
+  #grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  #results-summary{padding:.4rem .8rem .2rem}
+}
+@media(max-width:420px){
+  #grid{grid-template-columns:repeat(2,1fr)}
+  .logo{font-size:1.1rem}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <span class="logo"><em>MM</em>·MONEY</span>
+  <div class="nav-right">
+    <a href="https://www.instagram.com/mm.money_banknotes/" target="_blank" rel="noopener">@mm.money_banknotes</a>
+    <span class="count-badge" id="nav-count">— items</span>
+    <a href="about.html" style="color:var(--muted)">About</a>
+  </div>
+</nav>
+
+<div id="toolbar">
+  <input id="search" type="search" placeholder="Search banknotes…" autocomplete="off" spellcheck="false">
+  <select id="sort-select">
+    <option value="price-asc">Price ↑</option>
+    <option value="price-desc">Price ↓</option>
+    <option value="views-desc">Most viewed</option>
+    <option value="expiry-asc">Expiring soon</option>
+  </select>
+  <div class="chips">
+    <button class="chip active" data-condition="all">All</button>
+    <button class="chip" data-condition="unc">UNC</button>
+    <button class="chip" data-condition="vf">VF</button>
+    <button class="chip" data-condition="specimen">Specimen</button>
+    <button class="chip" data-condition="rare">Rare</button>
+  </div>
+  <button id="mobile-countries-btn" class="chip">🌍 Countries</button>
+</div>
+
+<div id="country-banner">
+  <span id="banner-label"></span>
+  <button id="banner-clear">✕ Show all</button>
+</div>
+
+<div id="drawer-overlay"></div>
+<div id="country-drawer">
+  <div id="drawer-header">
+    <span>Browse by Country</span>
+    <button id="drawer-close">✕</button>
+  </div>
+  <input id="drawer-search" type="search" placeholder="Filter countries…" autocomplete="off">
+  <div id="drawer-list"></div>
+</div>
+
+<div id="main">
+  <div id="grid-wrap">
+    <div id="results-summary"></div>
+    <div id="loading-state"><span class="spinner"></span><p>Loading collection…</p></div>
+    <div id="empty-state"><h2>No items found</h2><p>Try adjusting your search or filters.</p></div>
+    <div id="grid"></div>
+    <div id="pagination"></div>
+  </div>
+  <aside id="sidebar">
+    <div class="sidebar-header">Browse by Country</div>
+    <input id="country-search" type="search" placeholder="Filter countries…" autocomplete="off">
+    <div id="country-list"></div>
+  </aside>
+</div>
+
+<footer>
+  <p>MM·Money &mdash; <a href="https://www.instagram.com/mm.money_banknotes/" target="_blank" rel="noopener">@mm.money_banknotes</a> &mdash; <a href="mailto:info.mmmoney@gmail.com">info.mmmoney@gmail.com</a> &mdash; <a href="about.html">About</a></p>
+  <p style="margin-top:.4rem">Listings on <a href="https://www.delcampe.net" target="_blank" rel="noopener">Delcampe</a> and <a href="https://www.ebay.com/str/mmmoney" target="_blank" rel="noopener">eBay</a></p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "MM·Money World Banknote Shop",
+  "url": "https://mm-money.github.io",
+  "numberOfItems": 4073
+}
+</script>
+
+<script>
+const PER_PAGE = 48;
+const MULTI_WORD = [
+  "SOUTH AFRICA","WEST GERMANY","HONG KONG","EAST GERMANY",
+  "PAPUA NEW GUINEA","CENTRAL AFRICA","NEW ZEALAND","SIERRA LEONE",
+  "SAUDI ARABIA","EQUATORIAL GUINEA","DOMINICAN REPUBLIC",
+  "NORTH KOREA","SOUTH KOREA","COSTA RICA","PUERTO RICO",
+  "TRINIDAD TOBAGO","IVORY COAST","BURKINA FASO","CAPE VERDE",
+  "SRI LANKA","EL SALVADOR","CZECH REPUBLIC",
+  "GERMAN DEMOCRATIC REPUBLIC","NETHERLANDS ANTILLES","WESTERN SAMOA",
+];
+const BADGE_CLASSES = {Rare:"badge-rare",Specimen:"badge-specimen",Overprint:"badge-overprint",Error:"badge-error"};
+
+let allItems=[], filtered=[], activeCountry=null, searchQuery='', activeCondition='all', sortMode='price-asc', currentPage=1, searchDebounce=null;
+
+function idToImg(id){const p=String(id).padStart(12,'0');return `https://www.delcampe.net/static/img_large/auction/${p.slice(0,3)}/${p.slice(3,6)}/${p.slice(6,9)}/${p.slice(9,12)}_001.jpg`}
+function idToUrl(id,title){const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);return `https://www.delcampe.net/it/collezionismo/monete-banconote/banconote/${slug}-${id}.html`}
+function extractCountry(title){const t=title.toUpperCase().trim();for(const mw of MULTI_WORD){if(t.startsWith(mw))return mw.charAt(0)+mw.slice(1).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}const w=t.split(/\s+/);return w[0]?w[0].charAt(0)+w[0].slice(1).toLowerCase():'Unknown'}
+function detectBadges(title){const b=[];if(/\*?rare\*?|\*?scarce/i.test(title))b.push('Rare');if(/specimen/i.test(title))b.push('Specimen');if(/overprint/i.test(title))b.push('Overprint');if(/error/i.test(title))b.push('Error');return b}
+function parseDate(str){if(!str)return null;const m=str.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?new Date(+m[1],+m[2]-1,+m[3]):null}
+function isUrgent(d){if(!d)return false;const diff=d-new Date().setHours(0,0,0,0);return diff>=0&&diff<=48*3600*1000}
+function formatDate(d){return d?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}
+function countrySlug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function parseItem(row){
+  const id=String(row.id_auction||'').trim(), title=String(row.title||'').trim();
+  const d=parseDate(String(row.end_date||'').trim());
+  return {id,title,price:parseFloat(row.present_price)||0,priceDisplay:parseFloat(row.present_price)?parseFloat(row.present_price).toFixed(2):'—',views:parseInt(row.visits_number,10)||0,endDate:d,urgent:isUrgent(d),dateDisplay:formatDate(d),imgUrl:idToImg(id),listingUrl:idToUrl(id,title),country:extractCountry(title),badges:detectBadges(title)}
+}
+
+function cardHTML(item){
+  const badge=item.badges[0];
+  const badgeHtml=badge?`<span class="badge ${esc(BADGE_CLASSES[badge]||'')}">${esc(badge)}</span>`:'';
+  const dateHtml=item.dateDisplay?`<span class="${item.urgent?'urgent':''}">${item.urgent?'⚡':'⧖'} ${esc(item.dateDisplay)}</span>`:'';
+  return `<div class="card"><a href="${esc(item.listingUrl)}" target="_blank" rel="noopener"><div class="card-img-wrap">${badgeHtml}<img src="${esc(item.imgUrl)}" alt="${esc(item.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'img-placeholder\\'>◈</div>'"></div><div class="card-body"><p class="card-title">${esc(item.title)}</p><p class="card-price">€ ${esc(item.priceDisplay)}</p><p class="card-meta"><span>◉ ${esc(item.views)} views</span>${dateHtml}</p></div><div class="card-cta">View on Delcampe →</div></a></div>`
+}
+
+function applyFilters(){
+  const q=searchQuery.toLowerCase();
+  filtered=allItems.filter(item=>{
+    if(q&&!item.title.toLowerCase().includes(q))return false;
+    if(activeCountry&&item.country!==activeCountry)return false;
+    if(activeCondition!=='all'){
+      if(activeCondition==='unc'&&!/unc/i.test(item.title))return false;
+      if(activeCondition==='vf'&&!/vf/i.test(item.title))return false;
+      if(activeCondition==='specimen'&&!/specimen/i.test(item.title))return false;
+      if(activeCondition==='rare'&&!/\*?rare\*?|\*?scarce/i.test(item.title))return false;
+    }
+    return true;
+  });
+  switch(sortMode){
+    case 'price-asc':  filtered.sort((a,b)=>a.price-b.price);break;
+    case 'price-desc': filtered.sort((a,b)=>b.price-a.price);break;
+    case 'views-desc': filtered.sort((a,b)=>b.views-a.views);break;
+    case 'expiry-asc': filtered.sort((a,b)=>{if(!a.endDate&&!b.endDate)return 0;if(!a.endDate)return 1;if(!b.endDate)return -1;return a.endDate-b.endDate});break;
+  }
+  currentPage=1;render();
+}
+
+function render(){
+  const grid=document.getElementById('grid'), empty=document.getElementById('empty-state'), sum=document.getElementById('results-summary');
+  if(filtered.length===0){grid.innerHTML='';grid.classList.add('empty');empty.style.display='block';sum.textContent='';renderPagination(0);return}
+  empty.style.display='none';grid.classList.remove('empty');
+  const start=(currentPage-1)*PER_PAGE, slice=filtered.slice(start,start+PER_PAGE);
+  grid.innerHTML=slice.map(cardHTML).join('');
+  sum.textContent=`Showing ${start+1}–${Math.min(start+PER_PAGE,filtered.length)} of ${filtered.length.toLocaleString()} items`;
+  renderPagination(filtered.length);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderPagination(total){
+  const el=document.getElementById('pagination'), pages=Math.ceil(total/PER_PAGE);
+  if(pages<=1){el.innerHTML='';return}
+  let html='';
+  if(currentPage>1)html+=`<button class="page-btn prev-next" data-page="${currentPage-1}">‹ Prev</button>`;
+  const set=new Set([1,pages]);for(let i=Math.max(1,currentPage-2);i<=Math.min(pages,currentPage+2);i++)set.add(i);
+  const range=[...set].sort((a,b)=>a-b);let prev=null;
+  for(const p of range){if(prev!==null&&p-prev>1)html+='<span style="color:var(--muted);padding:0 .2rem">…</span>';html+=`<button class="page-btn${p===currentPage?' active':''}" data-page="${p}">${p}</button>`;prev=p}
+  if(currentPage<pages)html+=`<button class="page-btn prev-next" data-page="${currentPage+1}">Next ›</button>`;
+  el.innerHTML=html;
+}
+
+function buildSidebar(items){
+  const map={};for(const it of items)map[it.country]=(map[it.country]||0)+1;
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+
+  function renderList(rows){
+    const total=items.length;
+    let html=`<div class="country-row${!activeCountry?' active':''}" data-country=""><span class="country-dot">●</span><span class="country-name">All countries</span><span class="country-count">${total.toLocaleString()}</span></div>`;
+    for(const[name,count]of rows)html+=`<div class="country-row${name===activeCountry?' active':''}" data-country="${esc(name)}"><span class="country-dot">●</span><span class="country-name">${esc(name)}</span><span class="country-count">${count}</span></div>`;
+    ['country-list','drawer-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html});
+    document.querySelectorAll('.country-row').forEach(row=>row.addEventListener('click',()=>{setCountry(row.dataset.country||null);closeDrawer()}));
+  }
+
+  renderList(sorted);
+  function filterHandler(q){renderList(q?sorted.filter(([n])=>n.toLowerCase().includes(q)):sorted)}
+  document.getElementById('country-search').addEventListener('input',e=>filterHandler(e.target.value.toLowerCase()));
+  document.getElementById('drawer-search').addEventListener('input',e=>filterHandler(e.target.value.toLowerCase()));
+  window._countryData={sorted,renderList};
+}
+
+function setCountry(c){activeCountry=c;updateBanner();applyFilters();history.replaceState(null,'',c?`#country=${countrySlug(c)}`:'#')}
+function updateBanner(){const b=document.getElementById('country-banner'),l=document.getElementById('banner-label');if(activeCountry){l.textContent=`${activeCountry.toUpperCase()} · ${allItems.filter(i=>i.country===activeCountry).length} items`;b.classList.add('visible')}else{b.classList.remove('visible')}}
+function openDrawer(){document.getElementById('country-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.getElementById('drawer-search').focus()}
+function closeDrawer(){document.getElementById('country-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open')}
+
+function checkHash(){const m=location.hash.match(/[#&]country=([^&]*)/);if(m){const slug=decodeURIComponent(m[1]),match=allItems.find(i=>countrySlug(i.country)===slug);if(match)activeCountry=match.country}}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('search').addEventListener('input',e=>{clearTimeout(searchDebounce);searchDebounce=setTimeout(()=>{searchQuery=e.target.value.trim();currentPage=1;applyFilters()},150)});
+  document.getElementById('sort-select').addEventListener('change',e=>{sortMode=e.target.value;applyFilters()});
+  document.querySelectorAll('.chip[data-condition]').forEach(chip=>chip.addEventListener('click',()=>{document.querySelectorAll('.chip[data-condition]').forEach(c=>c.classList.remove('active'));chip.classList.add('active');activeCondition=chip.dataset.condition;applyFilters()}));
+  document.getElementById('banner-clear').addEventListener('click',()=>{setCountry(null);document.getElementById('country-search').value='';document.getElementById('drawer-search').value='';if(window._countryData)window._countryData.renderList(window._countryData.sorted)});
+  document.getElementById('pagination').addEventListener('click',e=>{const btn=e.target.closest('.page-btn');if(!btn)return;currentPage=parseInt(btn.dataset.page,10);render()});
+  document.getElementById('mobile-countries-btn').addEventListener('click',openDrawer);
+  document.getElementById('drawer-close').addEventListener('click',closeDrawer);
+  document.getElementById('drawer-overlay').addEventListener('click',closeDrawer);
+
+  Papa.parse('data/collection.csv',{
+    download:true,header:true,skipEmptyLines:true,
+    complete(results){
+      document.getElementById('loading-state').style.display='none';
+      allItems=results.data.map(parseItem).filter(i=>i.id&&i.title);
+      document.getElementById('nav-count').textContent=`${allItems.length.toLocaleString()} items`;
+      checkHash();buildSidebar(allItems);applyFilters();
+    },
+    error(err){
+      const p=document.createElement('p');p.style.color='var(--urgent)';p.textContent=`Could not load collection data. ${err.message||''}`;
+      const el=document.getElementById('loading-state');el.innerHTML='';el.appendChild(p);
+    }
+  });
+});
+</script>
+</body>
+</html>
