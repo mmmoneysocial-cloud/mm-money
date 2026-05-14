@@ -14,7 +14,7 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
-BASE_URL = "https://mm-money.github.io"
+BASE_URL = "https://mmmoneybanknotes.com"
 SCRIPT_DIR = Path(__file__).parent
 
 REQUIRED_COLUMNS = {"id_auction", "title", "present_price", "visits_number", "end_date"}

@@ -2,7 +2,7 @@
 
 Static showcase website for the MM·Money banknote shop on Delcampe and eBay.
 
-**Live site:** https://mm-money.github.io  
+**Live site:** https://mmmoneybanknotes.com  
 **eBay:** https://www.ebay.com/str/mmmoney  
 **Instagram:** [@mm.money_banknotes](https://www.instagram.com/mm.money_banknotes/)  
 **Email:** info.mmmoney@gmail.com
