@@ -168,7 +168,6 @@ footer a:hover{color:var(--gold)}
     <option value="price-asc">Price ↑</option>
     <option value="price-desc">Price ↓</option>
     <option value="views-desc">Most viewed</option>
-    <option value="expiry-asc">Expiring soon</option>
   </select>
   <div class="chips">
     <button class="chip active" data-condition="all">All</button>
@@ -235,6 +234,7 @@ const MULTI_WORD = [
   "TRINIDAD TOBAGO","IVORY COAST","BURKINA FASO","CAPE VERDE",
   "SRI LANKA","EL SALVADOR","CZECH REPUBLIC",
   "GERMAN DEMOCRATIC REPUBLIC","NETHERLANDS ANTILLES","WESTERN SAMOA",
+  "SAINT HELENA","SAO TOME",
 ];
 const BADGE_CLASSES = {Rare:"badge-rare",Specimen:"badge-specimen",Overprint:"badge-overprint",Error:"badge-error"};
 
@@ -242,25 +242,20 @@ let allItems=[], filtered=[], activeCountry=null, searchQuery='', activeConditio
 
 function idToImg(id){const p=String(id).padStart(12,'0');return `https://www.delcampe.net/static/img_large/auction/${p.slice(0,3)}/${p.slice(3,6)}/${p.slice(6,9)}/${p.slice(9,12)}_001.jpg`}
 function idToUrl(id,title){const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);return `https://www.delcampe.net/it/collezionismo/monete-banconote/banconote/${slug}-${id}.html`}
-function extractCountry(title){const t=title.toUpperCase().trim();for(const mw of MULTI_WORD){if(t.startsWith(mw))return mw.charAt(0)+mw.slice(1).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}const w=t.split(/\s+/);return w[0]?w[0].charAt(0)+w[0].slice(1).toLowerCase():'Unknown'}
+function extractCountry(title){const t=title.toUpperCase().trim();if(t.startsWith('ST. TOME'))return 'Sao Tome';for(const mw of MULTI_WORD){if(t.startsWith(mw))return mw.charAt(0)+mw.slice(1).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}const w=t.split(/\s+/);return w[0]?w[0].charAt(0)+w[0].slice(1).toLowerCase():'Unknown'}
 function detectBadges(title){const b=[];if(/\*?rare\*?|\*?scarce/i.test(title))b.push('Rare');if(/specimen/i.test(title))b.push('Specimen');if(/overprint/i.test(title))b.push('Overprint');if(/error/i.test(title))b.push('Error');return b}
-function parseDate(str){if(!str)return null;const m=str.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?new Date(+m[1],+m[2]-1,+m[3]):null}
-function isUrgent(d){if(!d)return false;const diff=d-new Date().setHours(0,0,0,0);return diff>=0&&diff<=48*3600*1000}
-function formatDate(d){return d?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}
 function countrySlug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
 function parseItem(row){
   const id=String(row.id_auction||'').trim(), title=String(row.title||'').trim();
-  const d=parseDate(String(row.end_date||'').trim());
-  return {id,title,price:parseFloat(row.present_price)||0,priceDisplay:parseFloat(row.present_price)?parseFloat(row.present_price).toFixed(2):'—',views:parseInt(row.visits_number,10)||0,endDate:d,urgent:isUrgent(d),dateDisplay:formatDate(d),imgUrl:idToImg(id),listingUrl:idToUrl(id,title),country:extractCountry(title),badges:detectBadges(title)}
+  return {id,title,price:parseFloat(row.present_price)||0,priceDisplay:parseFloat(row.present_price)?parseFloat(row.present_price).toFixed(2):'—',views:parseInt(row.visits_number,10)||0,imgUrl:idToImg(id),listingUrl:idToUrl(id,title),country:extractCountry(title),badges:detectBadges(title)}
 }
 
 function cardHTML(item){
   const badge=item.badges[0];
   const badgeHtml=badge?`<span class="badge ${esc(BADGE_CLASSES[badge]||'')}">${esc(badge)}</span>`:'';
-  const dateHtml=item.dateDisplay?`<span class="${item.urgent?'urgent':''}">${item.urgent?'⚡':'⧖'} ${esc(item.dateDisplay)}</span>`:'';
-  return `<div class="card"><a href="${esc(item.listingUrl)}" target="_blank" rel="noopener"><div class="card-img-wrap">${badgeHtml}<img src="${esc(item.imgUrl)}" alt="${esc(item.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'img-placeholder\\'>◈</div>'"></div><div class="card-body"><p class="card-title">${esc(item.title)}</p><p class="card-price">€ ${esc(item.priceDisplay)}</p><p class="card-meta"><span>◉ ${esc(item.views)} views</span>${dateHtml}</p></div><div class="card-cta">View on Delcampe →</div></a></div>`
+  return `<div class="card"><a href="${esc(item.listingUrl)}" target="_blank" rel="noopener"><div class="card-img-wrap">${badgeHtml}<img src="${esc(item.imgUrl)}" alt="${esc(item.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'img-placeholder\\'>◈</div>'"></div><div class="card-body"><p class="card-title">${esc(item.title)}</p><p class="card-price">€ ${esc(item.priceDisplay)}</p><p class="card-meta"><span>◉ ${esc(item.views)} views</span></p></div><div class="card-cta">View on Delcampe →</div></a></div>`
 }
 
 function applyFilters(){
@@ -280,7 +275,6 @@ function applyFilters(){
     case 'price-asc':  filtered.sort((a,b)=>a.price-b.price);break;
     case 'price-desc': filtered.sort((a,b)=>b.price-a.price);break;
     case 'views-desc': filtered.sort((a,b)=>b.views-a.views);break;
-    case 'expiry-asc': filtered.sort((a,b)=>{if(!a.endDate&&!b.endDate)return 0;if(!a.endDate)return 1;if(!b.endDate)return -1;return a.endDate-b.endDate});break;
   }
   currentPage=1;render();
 }

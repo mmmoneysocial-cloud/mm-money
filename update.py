@@ -11,7 +11,7 @@ import csv
 import json
 import re
 import sys
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 BASE_URL = "https://mmmoneybanknotes.com"
@@ -28,6 +28,7 @@ MULTI_WORD_COUNTRIES = [
     "TRINIDAD TOBAGO", "IVORY COAST", "BURKINA FASO", "CAPE VERDE",
     "SRI LANKA", "EL SALVADOR", "CZECH REPUBLIC",
     "GERMAN DEMOCRATIC REPUBLIC", "NETHERLANDS ANTILLES", "WESTERN SAMOA",
+    "SAINT HELENA", "SAO TOME",
 ]
 
 
@@ -55,6 +56,8 @@ def country_slug(country_name):
 
 def extract_country(title):
     t = title.upper().strip()
+    if t.startswith("ST. TOME"):
+        return "Sao Tome"
     for mw in MULTI_WORD_COUNTRIES:
         if t.startswith(mw):
             return mw.title()
@@ -83,24 +86,6 @@ def format_price(price_str):
         return price_str
 
 
-def parse_end_date(end_date_str):
-    try:
-        return datetime.strptime(end_date_str.strip(), "%Y-%m-%d %H:%M:%S").date()
-    except (ValueError, AttributeError):
-        return None
-
-
-def is_urgent(end_date):
-    if end_date is None:
-        return False
-    delta = end_date - date.today()
-    return 0 <= delta.days <= 1
-
-
-def format_date_display(end_date):
-    if end_date is None:
-        return ""
-    return end_date.strftime("%-d %b %Y")
 
 
 def html_escape(s):
@@ -128,19 +113,15 @@ def load_csv(path):
             title  = row["title"].strip()
             if not id_str or not title:
                 continue
-            end_date = parse_end_date(row.get("end_date", ""))
             items.append({
-                "id":           id_str,
-                "title":        title,
-                "price":        format_price(row.get("present_price", "")),
-                "views":        str(int(row.get("visits_number", "0").strip() or "0")),
-                "end_date":     end_date,
-                "img_url":      id_to_img(id_str),
-                "listing_url":  id_to_url(id_str, title),
-                "country":      extract_country(title),
-                "badges":       detect_badges(title),
-                "urgent":       is_urgent(end_date),
-                "date_display": format_date_display(end_date),
+                "id":          id_str,
+                "title":       title,
+                "price":       format_price(row.get("present_price", "")),
+                "views":       str(int(row.get("visits_number", "0").strip() or "0")),
+                "img_url":     id_to_img(id_str),
+                "listing_url": id_to_url(id_str, title),
+                "country":     extract_country(title),
+                "badges":      detect_badges(title),
             })
     return items
 
@@ -174,12 +155,6 @@ def static_card_html(item):
             f'{html_escape(badge)}</span>'
         )
 
-    date_style = ' style="color:#a04838"' if item["urgent"] else ""
-    date_part  = (
-        f'<span{date_style}>⧖ {html_escape(item["date_display"])}</span>'
-        if item["date_display"] else ""
-    )
-
     return f"""<div class="card">
   <a href="{html_escape(item["listing_url"])}" target="_blank" rel="noopener">
     <div class="card-img-wrap">
@@ -193,7 +168,7 @@ def static_card_html(item):
     <div class="card-body">
       <p class="card-title">{html_escape(item["title"])}</p>
       <p class="card-price">€ {html_escape(item["price"])}</p>
-      <p class="card-meta">◉ {html_escape(item["views"])} views &nbsp; {date_part}</p>
+      <p class="card-meta">◉ {html_escape(item["views"])} views</p>
     </div>
     <div class="card-cta">View on Delcampe →</div>
   </a>
